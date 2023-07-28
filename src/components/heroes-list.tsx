@@ -58,6 +58,7 @@ export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 						height={320}
 						alt={`${name} thumbnail`}
 						objectFit="cover"
+						// TODO remove layout prop
 						layout="responsive"
 					/>
 				</Link>

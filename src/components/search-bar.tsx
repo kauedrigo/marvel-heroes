@@ -1,28 +1,18 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from 'react'
 import { HiSearch } from 'react-icons/hi'
 
-import { getCharacters } from '@/api/characters'
-import { CharacterDataWrapper } from '@/types'
-
 type SearchBarProps = {
-	characterDataWrapper: CharacterDataWrapper
+	setSearchValue: Dispatch<SetStateAction<string>>
 }
 
-export const SearchBar = ({ characterDataWrapper }: SearchBarProps) => {
+export const SearchBar = ({ setSearchValue }: SearchBarProps) => {
 	const [value, setValue] = useState('')
-
-	const { refetch } = useQuery({
-		queryKey: ['characters', 'list'],
-		queryFn: () => getCharacters(value),
-		initialData: characterDataWrapper,
-	})
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		refetch()
+		setSearchValue(value)
 	}
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

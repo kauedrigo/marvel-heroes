@@ -1,18 +1,14 @@
-'use client'
+import axios from 'axios'
 
-import { getCharacters } from '@/api/characters'
+import { HeroesList } from '@/components/heroes-list'
+import { getMarvelAuthenticationParams } from '@/utils'
 
-export default function Home() {
-	const handleGetHeroes = async () => {
-		const heroes = await getCharacters()
-		console.log('🚀 ~ heroes:', heroes)
-	}
+export default async function Home() {
+	const authenticationParams = getMarvelAuthenticationParams()
 
-	return (
-		<div>
-			<button className="px-4 py-2 bg-blue-500 rounded-lg" onClick={handleGetHeroes}>
-				get heroes
-			</button>
-		</div>
-	)
+	const { data } = await axios.get(`${process.env.NEXT_PUBLIC_MARVEL_API_URL}/characters`, {
+		params: { ...authenticationParams },
+	})
+
+	return <HeroesList characterDataWrapper={data} />
 }

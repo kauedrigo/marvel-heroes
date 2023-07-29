@@ -3,11 +3,12 @@
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 
 import { getCharacters } from '@/api/characters'
+import { Pagination } from '@/components/pagination'
 import { SearchBar } from '@/components/search-bar'
 import { CharacterDataWrapper } from '@/types'
-import { useState } from 'react'
 
 type HeroesListProps = {
 	characterDataWrapper: CharacterDataWrapper
@@ -15,15 +16,17 @@ type HeroesListProps = {
 
 export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 	const [searchValue, setSearchValue] = useState('')
+	const [page, setPage] = useState(1)
 
 	const {
 		data: dataWrapper,
 		isLoading,
 		error,
 	} = useQuery({
-		queryKey: ['characters', 'list', searchValue],
-		queryFn: () => getCharacters(searchValue),
+		queryKey: ['characters', 'list', searchValue, page],
+		queryFn: () => getCharacters({ nameStartsWith: searchValue, page }),
 		initialData: characterDataWrapper,
+		keepPreviousData: true,
 	})
 
 	if (isLoading) return <p>Loading...</p>
@@ -70,6 +73,7 @@ export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 					</Link>
 				))}
 			</div>
+			<Pagination page={page} setPage={setPage} total={dataWrapper.data.total} />
 		</div>
 	)
 }

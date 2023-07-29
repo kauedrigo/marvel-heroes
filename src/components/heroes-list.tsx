@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { getCharacters } from '@/api/characters'
 import { Pagination } from '@/components/pagination'
@@ -17,6 +17,10 @@ type HeroesListProps = {
 export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 	const [searchValue, setSearchValue] = useState('')
 	const [page, setPage] = useState(1)
+
+	useEffect(() => {
+		setPage(1)
+	}, [searchValue])
 
 	const {
 		data: dataWrapper,

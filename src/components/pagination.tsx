@@ -16,14 +16,21 @@ export const Pagination = ({ page, setPage, total, siblingsCount = 1 }: Paginati
 
 	const handlePreviousPage = () => {
 		setPage((prev) => prev - 1)
+		window.scrollTo({ top: 0, behavior: 'smooth' })
 	}
 
 	const handleNextPage = () => {
 		setPage((prev) => prev + 1)
+		window.scrollTo({ top: 0, behavior: 'smooth' })
 	}
 
 	const paginationItems = useMemo(() => {
 		const noDots = totalPages <= 5 + 2 * siblingsCount
+
+		const handleSetPage = (value: number) => {
+			setPage(value)
+			window.scrollTo({ top: 0, behavior: 'smooth' })
+		}
 
 		const printPaginationItems = (start: number, end: number) => {
 			const items: JSX.Element[] = []
@@ -35,7 +42,7 @@ export const Pagination = ({ page, setPage, total, siblingsCount = 1 }: Paginati
 						key={index}
 						aria-label={`show page ${index}`}
 						aria-current={isSelected && 'page'}
-						onClick={() => setPage(index)}
+						onClick={() => handleSetPage(index)}
 						className={classNames(
 							'w-7 h-7 rounded-md font-semibold md:text-xl md:w-8 md:h-8',
 							isSelected && 'bg-red-600 text-zinc-50',
@@ -82,7 +89,10 @@ export const Pagination = ({ page, setPage, total, siblingsCount = 1 }: Paginati
 		<div className="flex justify-center gap-2 w-full" role="navigation">
 			<button aria-label="previous list page" onClick={handlePreviousPage} disabled={page <= 1}>
 				<HiChevronLeft
-					className="text-2xl text-gray-800 md:text-3xl cursor-pointer"
+					className={classNames(
+						'text-2x md:text-3xl cursor-pointer',
+						page <= 1 ? 'text-gray-400' : 'text-gray-800',
+					)}
 					aria-hidden="true"
 					focusable="false"
 				/>
@@ -90,7 +100,10 @@ export const Pagination = ({ page, setPage, total, siblingsCount = 1 }: Paginati
 			{paginationItems}
 			<button aria-label="next list page" onClick={handleNextPage} disabled={page >= totalPages}>
 				<HiChevronRight
-					className="text-2xl text-gray-800 md:text-3xl cursor-pointer"
+					className={classNames(
+						'text-2x md:text-3xl cursor-pointer',
+						page >= totalPages ? 'text-gray-400' : 'text-gray-800',
+					)}
 					aria-hidden="true"
 					focusable="false"
 				/>

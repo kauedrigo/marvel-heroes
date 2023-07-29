@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-import { getCharacters } from '@/api/characters'
+import { getCharactersList } from '@/api/characters'
 import { Pagination } from '@/components/pagination'
 import { SearchBar } from '@/components/search-bar'
 import { CharacterDataWrapper } from '@/types'
@@ -28,7 +28,7 @@ export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 		error,
 	} = useQuery({
 		queryKey: ['characters', 'list', searchValue, page],
-		queryFn: () => getCharacters({ nameStartsWith: searchValue, page }),
+		queryFn: () => getCharactersList({ nameStartsWith: searchValue, page }),
 		initialData: characterDataWrapper,
 		keepPreviousData: true,
 	})
@@ -59,7 +59,7 @@ export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{formatData().map(({ id, name, thumbnail }) => (
 					<Link
-						href={'#'}
+						href={`/characters/${id}`}
 						className="flex flex-col gap-1 font-semibold md:text-xl"
 						key={id}
 						aria-label={`Know more about ${name}`}

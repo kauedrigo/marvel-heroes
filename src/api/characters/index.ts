@@ -1,15 +1,15 @@
 import { AxiosResponse } from 'axios'
 
 import { marvelApi } from '@/api/marvelApi'
-import { CharacterDataWrapper } from '@/types'
 import { CHARACTERS_PER_PAGE } from '@/constants'
+import { CharacterDataWrapper, ComicDataWrapper } from '@/types'
 
-type GetCharactersParams = {
+type GetCharactersListParams = {
 	nameStartsWith?: string
 	page: number
 }
 
-export const getCharacters = async ({ nameStartsWith, page }: GetCharactersParams) => {
+export const getCharactersList = async ({ nameStartsWith, page }: GetCharactersListParams) => {
 	const params: { [key: string]: string | number } = {}
 
 	if (nameStartsWith) {
@@ -21,6 +21,18 @@ export const getCharacters = async ({ nameStartsWith, page }: GetCharactersParam
 	const { data }: AxiosResponse<CharacterDataWrapper> = await marvelApi.get(`/characters`, {
 		params,
 	})
+
+	return data
+}
+
+export const getCharacter = async (id: string) => {
+	const { data }: AxiosResponse<CharacterDataWrapper> = await marvelApi.get(`/characters/${id}`)
+
+	return data
+}
+
+export const getCharacterComics = async (id: string) => {
+	const { data }: AxiosResponse<ComicDataWrapper> = await marvelApi.get(`/characters/${id}/comics`)
 
 	return data
 }

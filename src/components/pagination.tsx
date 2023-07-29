@@ -90,8 +90,8 @@ export const Pagination = ({ page, setPage, total, siblingsCount = 1 }: Paginati
 			<button aria-label="previous list page" onClick={handlePreviousPage} disabled={page <= 1}>
 				<HiChevronLeft
 					className={classNames(
-						'text-2x md:text-3xl cursor-pointer',
-						page <= 1 ? 'text-gray-400' : 'text-gray-800',
+						'text-2x md:text-3xl',
+						page <= 1 ? 'text-gray-400' : 'text-gray-800 cursor-pointer',
 					)}
 					aria-hidden="true"
 					focusable="false"
@@ -101,8 +101,8 @@ export const Pagination = ({ page, setPage, total, siblingsCount = 1 }: Paginati
 			<button aria-label="next list page" onClick={handleNextPage} disabled={page >= totalPages}>
 				<HiChevronRight
 					className={classNames(
-						'text-2x md:text-3xl cursor-pointer',
-						page >= totalPages ? 'text-gray-400' : 'text-gray-800',
+						'text-2x md:text-3xl',
+						page >= totalPages ? 'text-gray-400' : 'text-gray-800 cursor-pointer',
 					)}
 					aria-hidden="true"
 					focusable="false"

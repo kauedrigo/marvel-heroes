@@ -4,11 +4,12 @@ import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from 'reac
 import { HiSearch } from 'react-icons/hi'
 
 type SearchBarProps = {
+	initialValue: string
 	setSearchValue: Dispatch<SetStateAction<string>>
 }
 
-export const SearchBar = ({ setSearchValue }: SearchBarProps) => {
-	const [value, setValue] = useState('')
+export const SearchBar = ({ initialValue = '', setSearchValue }: SearchBarProps) => {
+	const [value, setValue] = useState(initialValue)
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()

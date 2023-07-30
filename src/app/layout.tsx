@@ -5,6 +5,7 @@ import React from 'react'
 import './globals.css'
 import Providers from '@/components/providers'
 import classNames from 'classnames'
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,6 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						{children}
 					</main>
 				</Providers>
+				<footer className="p-3">
+					<Link href="http://marvel.com" className="flex text-center">
+						Data provided by Marvel. © 2023 MARVEL
+					</Link>
+				</footer>
 			</body>
 		</html>
 	)

@@ -3,12 +3,13 @@
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { HiArrowNarrowLeft } from 'react-icons/hi'
 
 import { getCharacter, getCharacterComics } from '@/api/characters'
 
 export default function Character() {
+	const { back } = useRouter()
 	const { id } = useParams()
 
 	const {
@@ -70,10 +71,10 @@ export default function Character() {
 
 	return (
 		<div className="flex flex-col gap-4">
-			<Link href="/" className="flex items-center gap-2 text-lg">
+			<button className="flex items-center gap-2 text-lg" onClick={back}>
 				<HiArrowNarrowLeft className="text-2xl md:text-4xl text-gray-800" />
-				Go back to home
-			</Link>
+				Go back
+			</button>
 			<h1 className="text-2xl md:text-3xl font-semibold">{name}</h1>
 			<section className="flex flex-col gap-2 sm:flex-row sm:gap-6 items-center">
 				<Image src={thumbnailSrc} width={400} height={400} alt="" className="rounded-lg" />

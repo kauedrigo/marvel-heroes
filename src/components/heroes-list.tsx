@@ -3,43 +3,56 @@
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 import { getCharactersList } from '@/api/characters'
 import { Pagination } from '@/components/pagination'
 import { SearchBar } from '@/components/search-bar'
-import { CharacterDataWrapper } from '@/types'
 
-type HeroesListProps = {
-	characterDataWrapper: CharacterDataWrapper
-}
+export const HeroesList = () => {
+	const router = useRouter()
+	const pathname = usePathname()
+	const search = useSearchParams().get('nameStartsWith') ?? ''
+	const pagination = useSearchParams().get('pagination') ?? 1
 
-export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
-	const [searchValue, setSearchValue] = useState('')
-	const [page, setPage] = useState(1)
-
-	useEffect(() => {
-		setPage(1)
-	}, [searchValue])
+	const [nameStartsWith, setNameStartsWith] = useState(search)
+	const [page, setPage] = useState(Number(pagination))
 
 	const {
 		data: dataWrapper,
 		isLoading,
 		error,
 	} = useQuery({
-		queryKey: ['characters', 'list', searchValue, page],
-		queryFn: () => getCharactersList({ nameStartsWith: searchValue, page }),
-		initialData: characterDataWrapper,
+		queryKey: ['characters', 'list', nameStartsWith, page],
+		queryFn: () => {
+			let queryString = `?`
+			if (nameStartsWith === search) {
+				queryString += `pagination=${page}`
+			} else {
+				setPage(1)
+				queryString += `pagination=${1}`
+			}
+			if (nameStartsWith) {
+				queryString += `&nameStartsWith=${nameStartsWith}`
+			}
+			router.push(pathname + queryString)
+			return getCharactersList({ nameStartsWith, page })
+		},
 		keepPreviousData: true,
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+		retry: 1,
 	})
 
 	if (isLoading) return <p>Loading...</p>
 
 	if (error) return <p>error</p>
 
+	if (!dataWrapper) return <p>error</p>
+
 	const formatData = () => {
-		const { data } = dataWrapper
-		const { results } = data
+		const results = dataWrapper.data.results
 
 		const formattedData = results.map(({ id, name, thumbnail: thumbnailObject }) => {
 			const hasThumbnail = thumbnailObject.path.split('/').slice(-1)[0] !== 'image_not_available'
@@ -55,7 +68,7 @@ export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 
 	return (
 		<div className="flex flex-col gap-4">
-			<SearchBar setSearchValue={setSearchValue} />
+			<SearchBar setSearchValue={setNameStartsWith} />
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{formatData().map(({ id, name, thumbnail }) => (
 					<Link
@@ -70,9 +83,7 @@ export const HeroesList = ({ characterDataWrapper }: HeroesListProps) => {
 							width={320}
 							height={320}
 							alt={`${name} thumbnail`}
-							objectFit="cover"
-							// TODO remove layout prop
-							layout="responsive"
+							className="w-full"
 						/>
 					</Link>
 				))}

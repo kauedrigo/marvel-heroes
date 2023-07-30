@@ -19,6 +19,9 @@ export default function Character() {
 	} = useQuery({
 		queryKey: ['characters', id],
 		queryFn: () => getCharacter(id as string),
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+		retry: 1,
 	})
 
 	const {
@@ -83,12 +86,16 @@ export default function Character() {
 			<section className="flex flex-col gap-2">
 				<h2 className="text-lg md:text-xl font-semibold">Comics</h2>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-					{formatComicsData().map(({ id, thumbnailSrc, title, redirectUrl }) => (
-						<Link href={redirectUrl} key={id}>
-							<p className="text-base font-medium">{title}</p>
-							<Image src={thumbnailSrc} width={300} height={300} alt="" className="w-full" />
-						</Link>
-					))}
+					{comicsDataWrapper.data.count > 0 ? (
+						formatComicsData().map(({ id, thumbnailSrc, title, redirectUrl }) => (
+							<Link href={redirectUrl} key={id}>
+								<p className="text-base font-medium">{title}</p>
+								<Image src={thumbnailSrc} width={300} height={300} alt="" className="w-full" />
+							</Link>
+						))
+					) : (
+						<p>comics not available</p>
+					)}
 				</div>
 			</section>
 		</div>

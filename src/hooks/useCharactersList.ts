@@ -1,20 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
 
 import { getCharactersList } from '@/api/characters'
 import { CharacterDataWrapper } from '@/types'
 
-export const useCharactersList = () => {
-	const router = useRouter()
-	const pathname = usePathname()
-	const searchParams = useSearchParams()
-	const search = searchParams.get('nameStartsWith') ?? ''
-	const pagination = searchParams.get('pagination') ?? 1
+type UseCharactersListProps = {
+	nameStartsWith: string
+	page: number
+}
 
-	const [nameStartsWith, setNameStartsWith] = useState(search)
-	const [page, setPage] = useState(Number(pagination))
-
+export const useCharactersList = ({ nameStartsWith, page }: UseCharactersListProps) => {
 	const formatData = (data: CharacterDataWrapper) => {
 		const results = data?.data.results
 
@@ -32,20 +26,7 @@ export const useCharactersList = () => {
 
 	const { data, isLoading, error } = useQuery({
 		queryKey: ['characters', 'list', nameStartsWith, page],
-		queryFn: () => {
-			let queryString = `?`
-			if (nameStartsWith === search) {
-				queryString += `pagination=${page}`
-			} else {
-				setPage(1)
-				queryString += `pagination=${1}`
-			}
-			if (nameStartsWith) {
-				queryString += `&nameStartsWith=${nameStartsWith}`
-			}
-			router.push(pathname + queryString)
-			return getCharactersList({ nameStartsWith, page })
-		},
+		queryFn: () => getCharactersList({ nameStartsWith, page }),
 		select: formatData,
 		keepPreviousData: true,
 		refetchOnWindowFocus: false,
@@ -58,9 +39,5 @@ export const useCharactersList = () => {
 		total: data?.total ?? 0,
 		isLoading,
 		error,
-		page,
-		setPage,
-		nameStartsWith,
-		setNameStartsWith,
 	}
 }

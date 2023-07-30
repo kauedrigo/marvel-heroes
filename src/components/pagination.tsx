@@ -86,7 +86,10 @@ export const Pagination = ({ page, setPage, total, siblingsCount = 1 }: Paginati
 	}, [page, totalPages, siblingsCount, setPage])
 
 	return (
-		<div className="flex justify-center gap-2 w-full" role="navigation">
+		<div
+			className={classNames('justify-center gap-2 w-full', total > 0 ? 'flex' : 'hidden')}
+			role="navigation"
+		>
 			<button aria-label="previous list page" onClick={handlePreviousPage} disabled={page <= 1}>
 				<HiChevronLeft
 					className={classNames(
